@@ -1,8 +1,9 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" translate="no">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="google" content="notranslate">
 <title>옐로우짐 서사 인터뷰</title>
 <meta name="description" content="질문에 순서대로 답하면 당신의 이야기가 한 편의 드라마처럼 정리됩니다. 옐로우짐 인터뷰 영상의 시작.">
 <meta name="robots" content="noindex, nofollow">
@@ -29,9 +30,30 @@
 </head>
 <body>
 <div class="load" id="load"><div><b></b>옐로우짐 서사 인터뷰를 여는 중…</div></div>
-<iframe id="app" title="옐로우짐 서사 인터뷰"
-  src="https://script.google.com/macros/s/AKfycbxnY8aFkWcca8VsNfFl3vADJFII2QUbEvcySKoDKuhzjVPGCFRpDdAE91yBdMiWcLg3-Q/exec"
-  allow="clipboard-write" referrerpolicy="strict-origin"
-  onload="document.getElementById('load').remove()"></iframe>
+<script>
+  (function () {
+    var APP = 'https://script.google.com/macros/s/AKfycbxnY8aFkWcca8VsNfFl3vADJFII2QUbEvcySKoDKuhzjVPGCFRpDdAE91yBdMiWcLg3-Q/exec';
+    // 초대 링크(?i=입장코드&r=역할)만 웹앱으로 넘깁니다.
+    var q = new URLSearchParams(location.search), out = new URLSearchParams();
+    var i = (q.get('i') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+    var r = (q.get('r') || '').toLowerCase();
+    if (/^YG\d{2}[A-Z0-9]{5}$/.test(i)) out.set('i', i);
+    if (/^(owner|trainer|pilates|yoga|member)$/.test(r)) out.set('r', r);
+    var f = document.createElement('iframe');
+    f.title = '옐로우짐 서사 인터뷰';
+    f.allow = 'clipboard-write; web-share';
+    f.referrerPolicy = 'strict-origin';
+    f.src = APP + (out.toString() ? '?' + out.toString() : '');
+    f.onload = function () { var l = document.getElementById('load'); if (l) l.remove(); };
+    document.body.appendChild(f);
+    // 웹앱의 '보내기' 버튼 → 휴대폰 공유 창(카카오톡 등)
+    window.addEventListener('message', function (e) {
+      var d = e.data, h = '';
+      try { h = new URL(e.origin).hostname; } catch (x) { return; }
+      if (!d || d.type !== 'yg-share' || !/(^|\.)googleusercontent\.com$/.test(h)) return;
+      if (navigator.share) navigator.share({ title: String(d.title || ''), text: String(d.text || '') }).catch(function () {});
+    });
+  })();
+</script>
 </body>
 </html>
